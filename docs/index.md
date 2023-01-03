@@ -1,11 +1,29 @@
-# Demo服务实例部署文档
-## 概述
-TuGraph（tugraph.org）是蚂蚁集团的高性能图数据库（Graph Database）及图数据管理平台。TuGraph在计算巢上提供了社区版服务，您无需自行配置云主机，即可在计算巢上快速部署TuGraph服务、实现运维监控，从而方便地基于TuGraph搭建您自己的图应用。本文向您介绍如何开通计算巢上的TuGraph社区版服务，以及部署流程和使用说明。
-## 计费说明
-TuGraph社区版在计算巢上的费用主要涉及：
+# NebulaGraph 企业版部署指南
 
-- 所选vCPU与内存规格
-- 系统盘类型及容量
+## 产品说明
+
+NebulaGraph（nebula-graph.com.cn）是一款开源的、分布式的、易扩展的原生图数据库，能够承载数千亿个点和数万亿条边的超大规模数据集，并且提供毫秒级查询。
+
+NebulaGraph Cloud 阿里云版是基于计算巢的数据服务产品，支持在阿里云平台上一键部署 NebulaGraph 企业版服务实例，帮助您完成数据库部署、性能调优、运维等繁杂工作，让您快速在云上创建整套图数据库服务集群。
+
+## 资源与费用
+
+NebulaGraph Cloud 阿里云版支持免费试用和付费使用，二者的详细说明如下表。
+
+| 项目 | 免费试用版 | 付费版 |
+| - | - | - |
+| 云资源归属 | 阿里云官方账号 | 用户账号 |
+| 云资源费用 | 阿里云承担 | 用户承担 |
+| 云资源使用时长 | 试用 30 天 | 用户创建实例时选择 |
+| NebulaGraph 许可证费用 | 试用期内免费 | 用户承担 |
+| NebulaGraph 服务许可证有效期 | 14 天 | 用户创建实例时选择 |
+| 许可证过期后数据是否保留 | 是 | 是 |
+| 云资源到期后数据是否保留 | 否 | 否 |
+
+NebulaGraph Cloud 阿里云版在计算巢中的云资源费用主要涉及：
+
+- 所选 vCPU 与内存规格
+- 数据盘类型（固定为 PL0 级 ESSD 云盘）及容量
 - 公网带宽
 
 计费方式包括：
@@ -13,82 +31,142 @@ TuGraph社区版在计算巢上的费用主要涉及：
 - 按量付费（小时）
 - 包年包月
 
-目前提供如下实例：
+## 套餐版本与部署架构
 
-| 规格族 | vCPU与内存 | 系统盘 | 公网带宽 |
-| --- | --- | --- | --- |
-| ecs.r6.xlarge | 内存型r6，4vCPU 32GiB | ESSD云盘 200GiB PL0 | 固定带宽1Mbps |
+NebulaGraph Cloud 阿里云版支持如下套餐版本和部署架构。
 
-预估费用在创建实例时可实时看到。
-如需更多规格、其他服务（如集群高可用性要求、企业级支持服务等），请联系我们 [tugraph@service.alipay.com](mailto:tugraph@service.alipay.com)。
-## 
-## 部署架构
-TuGraph社区版采用单机部署的架构，存储计算以及web服务都在一个台服务器上。
+| 套餐版本 | 部署架构 |
+| - | - |
+| 基础版 | 将所有 NebulaGraph 服务节点部署在 1 台 ECS 服务器上。 |
+| 标准版 | 将 Graph 服务和 Storage 服务分别部署在不同的 ECS 服务器上，每个服务都是单节点（1 台 ECS）。将 Explorer 等生态工具混合部署在 1 台 ECS 服务器上。 |
+| 高可用版 |  将 Graph 服务和 Storage 服务分别部署在不同的 ECS 服务器上，每个服务都包含 3 节点（3 台 ECS）。将 Explorer 等生态工具混合部署在 1 台 ECS 服务器上。 |
 
 ## RAM账号所需权限
-TuGraph服务需要对ECS、VPC等资源进行访问和创建操作，若您使用RAM用户创建服务实例，需要在创建服务实例前，对使用的RAM用户的账号添加相应资源的权限。添加RAM权限的详细操作，请参见[为RAM用户授权](https://help.aliyun.com/document_detail/121945.html)。所需权限如下表所示。
+
+NebulaGraph 服务需要对 ECS、VPC 等资源进行访问和创建操作，若您使用 RAM 用户创建服务实例，需要在创建服务实例前，对使用的RAM用户的账号添加相应资源的权限。添加RAM权限的详细操作，请参见[为 RAM 用户授权](https://help.aliyun.com/document_detail/121945.html)。所需权限如下表所示。
 
 | 权限策略名称 | 备注 |
 | --- | --- |
-| AliyunECSFullAccess | 管理云服务器服务（ECS）的权限 |
+| AliyunECSFullAccess | 管理云服务器（ECS）的权限 |
 | AliyunVPCFullAccess | 管理专有网络（VPC）的权限 |
 | AliyunROSFullAccess | 管理资源编排服务（ROS）的权限 |
 | AliyunComputeNestUserFullAccess | 管理计算巢服务（ComputeNest）的用户侧权限 |
 | AliyunCloudMonitorFullAccess | 管理云监控（CloudMonitor）的权限 |
 
+## 创建付费版服务实例
 
-## 部署流程
-### 部署步骤
+1. 登录[阿里云控制台](https://home.console.aliyun.com/home/dashboard/ProductAndService)。
 
-1. 单击下面的部署链接，进入服务实例部署界面，根据界面提示，填写参数完成部署。
+2. 打开云市场的 [NebulaGraph 产品页](https://market.aliyun.com/products/56024006/cmgj00059955.html?#sku=yuncode5395500004)。
 
-[部署链接](https://computenest.console.aliyun.com/user/cn-hangzhou/serviceInstanceCreate?spm=5176.24779694.0.0.3d9d4d22Kr7osZ&ServiceId=service-7b50ea3d20e643da95bf)
+3. 选择**套餐版本**和**购买时长**（即 NebulaGraph 服务的许可证有效期），并单击**立即购买**。
 
-1. 单击部署链接。在创建服务实例页面，需先选中 **同意授权并创建关联角色** ，选中后即可继续创建服务实例。
+  >**注意：** 当前云市场显示的部分价格并非实际售价，购买时需通过右侧的钉钉客服确认实际价格。
 
-![1.png](1.png)
-### 
-### 部署参数说明
-您在创建服务实例的过程中，需要配置服务实例信息。下文介绍云XR实时渲染平台服务实例输入参数的详细信息。
+4. 在**创建服务实例**页，保持**选择模板**处的选择不变。如需切换部署架构，可改变选中的选项，重新选择模板。
 
-| 参数组 | 参数项 | 示例 | 说明 |
-| --- | --- | --- | --- |
-| 服务实例名称 |  | test | 实例的名称 |
-| 地域 |  | 华北2（北京） | 选中服务实例的地域，建议就近选中，以获取更好的网络延时。 |
-| 付费类型配置 | 付费类型 | 按量付费 或 包年包月 | 
- |
-| 可用区配置 | 部署区域 | 可用区I | 地域下的不同可用区域 |
-| 选择已有基础资源配置 | VPC ID | vpc-xxx | 选择专有网络的ID。 |
-| 选择已有基础资源配置 | 交换机ID | vsw-xxx | 选择交换机ID。若找不到交换机, 可尝试切换地域和可用区 |
-| ECS实例配置 | 实例类型 | ecs.r6.xlarge | 当前仅支持ecs.r6.xlarge规格 |
-| ECS实例配置 | 实例密码 | ******** | 设置实例密码。长度8~30个字符，必须包含三项（大写字母、小写字母、数字、 ()`~!@#$%^&*_-+={}[]:;'<>,.?/ 中的特殊符号）。 |
+  >**说明：** 改变模板会改变之前选择的套餐版本，软件费用（NebulaGraph 许可证费用）和创建服务实例需要的资源也会改变。
 
-![2.png](2.png)
+5. （可选）设置**服务实例名称**。默认值为服务实例 ID。
 
-### 
-### 验证结果
+6. 选择要创建服务实例的**地域**。
 
-1. 查看服务实例。
-服务实例创建成功后，部署时间大约需要2分钟。部署完成后，页面上可以看到对应的服务实例。 
+7. 在**付费模式设置**区域，指定 ECS 服务器的付费方式。默认为**按量付费**。
 
-![3.png](3.png)
+  - **按量付费**：按照计费周期计费，在每个结算周期生成账单并从账户中扣除相应费用。详情参见[按量付费](https://help.aliyun.com/document_detail/40653.html)。
 
-2. 通过服务实例访问TuGraph
+  - **包年包月**：先付费后使用。详情参见[包年包月](https://help.aliyun.com/document_detail/56220.html)。选择包年包月模式需要指定**购买时长周期**和**购买时长**。**购买时长周期**当前仅支持 **Month**，即按月购买。
 
-![4.png](4.png)
-进入到对应的服务实例后，可以在页面上获取到web、rpc、ssh共3种使用方式。
+8. 在 **NebulaGraph 配置**区域，完成数据盘和 ECS 服务器密码设置。
+  
+9. 在**基础设施配置**区域，完成以下设置。
 
+  1. 选择**专有网络 VPC 实例 ID**。
 
-### 使用TuGraph
-请访问TuGraph官网了解如何使用TuGraph：[TuGraph可视化使用文档](https://www.tugraph.org/doc?version=V3.3.0&id=10000000001031969)
+    如果下拉列表为空，先单击其右侧的**新建专有网络**，完成专有网络创建。
 
-## 问题排查
-请访问TuGraph-db on Github的[Discussion](https://github.com/TuGraph-db/tugraph-db/discussions/115)获取帮助
+  2. 选择**交换机可用区**。
+
+  3. 选择**业务网络交换机的实例 ID**。
+
+    如果下拉列表为空，先单击其右侧的**新建交换机**，完成交换机创建。
+
+10. 完成**权限确认**，并选中**我同意授权服务商（杭州悦数科技有限公司）获取上述权限以提供代运维服务**。
+
+11. 在页面底部，单击**下一步：确认订单**。
+
+12. 在**服务条款**区域，勾选**我已阅读并同意《商品在线协议》《云市场平台服务协议》《计算巢服务协议》**。
+
+13. 在页面底部，单击**立即支付**。
+
+14. 在**支付**页面，选择支付方式，之后单击页面底部的**支付**。
+
+15. 在**支付完成**页面，单击**管理控制台**。
+
+16. 在**已购买的服务**页面，单击要创建的实例右侧的**立即进入计算巢部署或查看部署详情**。
+
+    > **说明：** 如果已购买的服务列表中未显示要创建的实例，刷新页面。
+
+17. 在**服务实例详情**页查看实例的**状态**，确保状态为**部署中**。
+
+  部署的平均耗时为 10 分钟。完成后实例的状态变为**已部署**。
+
+## 创建免费版试用版服务实例
+
+>**禁止：** 免费试用实例不可在生产环境中使用。
+
+1. 登录阿里云计算巢[推荐服务](http://c.nxw.so/bC0C0 "https://computenest.console.aliyun.com/user/cn-hangzhou/recommendService")页面，搜索 **NebulaGraph**。
+
+2. 在 **NebulaGraph 集群版**卡片上，单击**免费试用**。
+
+3. 系统会为首次创建 NebulaGraph 服务实例的用户弹出申请对话框。在**申请权限**对话框中填写申请人信息。带有红色星号（*）的为必填项。
+
+  >**说明：** 申请通过后需从第 1 步重新开始。
+
+4. （可选）设置**服务实例名称**。默认值为服务实例 ID。
+
+5. 选择要创建实例的**地域**。
+
+6. 在 **NebulaGraph 配置**区域，完成数据盘和 ECS 服务器密码设置。
+  
+7. 在**基础设施配置**区域，选择**交换机可用区**。
+
+8. 完成**权限确认**，并选中**我同意授权服务商（杭州悦数科技有限公司）获取上述权限以提供代运维服务**。
+
+9. 在页面底部，单击**下一步：确认订单**。
+
+10. 在**服务条款**区域，勾选**我已阅读并同意《计算巢服务协议》**。
+
+11. 在页面底部，单击**开始免费试用**。
+
+12. 在**提交成功**页面，单击**去列表查看**。
+
+13. 在实例列表中查看目标实例的**状态**，确保状态为**部署中**。
+
+  部署的平均耗时为 10 分钟。完成后实例的状态变为**已部署**。
+
+## 查看服务实例
+
+在计算巢控制台可以查看服务实例的详细信息，详情参见[查看服务实例](https://help.aliyun.com/document_detail/290838.html)。
+
+## 查看连接信息
+
+连接服务前，需要在阿里云计算巢的实例详情中查看各服务的连接地址。查看方式如下：
+
+1. 登录[服务实例管理](http://c.nxw.so/9huj4 "https://computenest.console.aliyun.com/user/cn-hangzhou/serviceInstance/private")页面。
+
+  >**说明：** 如果要寻找的是免费试用版服务实例，需先在**服务实例管理**页面单击**试用服务**标签。
+
+2. 在实例列表中，单击目标实例的**服务实例ID**，或其右侧**操作**列的**详情**。
+
+3. 在**概览**标签页的**基本信息**区域，可以查看 Graph 服务、Storage 服务，以及 Explorer、Dashboard 等周边工具的连接信息。
+
+## 连接 NebulaGraph
+
+NebulaGraph Cloud 阿里云版提供多种连接方式，详情参见[连接 NebulaGraph](https://docs.nebula-graph.com.cn/3.1.3/nebula-cloud/nebula-cloud-on-alibabacloud/2.use-cloud-services/#nebulagraph)。
 
 ## 联系我们
-欢迎访问TuGraph官网（[https://www.tugraph.org/](https://www.tugraph.org/)）了解更多信息。
-联系邮箱：[tugraph@service.alipay.com](mailto:tugraph@service.alipay.com)
-社区版开源地址：[https://github.com/TuGraph-db/tugraph-db](https://github.com/TuGraph-db/tugraph-db)
-扫码关注微信公众号，技术博客、活动通知不容错过：
 
-![%.png](5.png)
+如果对 NebulaGraph 产品有任何疑问，访问 [NebulaGraph 产品页](https://market.aliyun.com/products/56024006/cmgj00059955.html?#sku=yuncode5395500004)，通过页面右侧的方式联系我们：
+
+![联系 NebulaGraph 服务商](https://docs-cdn.nebula-graph.com.cn/figures/alicloud-contact-us_2023.01.04.png)
