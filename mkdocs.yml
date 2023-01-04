@@ -1,3 +1,6 @@
 site_name: Aliyun 计算巢 x NebulaGraph 
 theme: 
   name: aliyuncomputenest
+
+markdown_extensions:
+  - mdx_truly_sane_lists
