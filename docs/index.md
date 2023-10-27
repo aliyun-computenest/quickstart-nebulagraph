@@ -1,28 +1,28 @@
-# NebulaGraph 企业版部署指南
+# 悦数图数据库部署指南
 
 >**免责声明：**本文档可能包含第三方产品信息，该信息仅供参考。阿里云对第三方产品的性能、可靠性以及操作可能带来的潜在影响，不做任何暗示或其他形式的承诺。
 
 ## 产品说明
 
-NebulaGraph（nebula-graph.com.cn）是一款开源的、分布式的、易扩展的原生图数据库，能够承载数千亿个点和数万亿条边的超大规模数据集，并且提供毫秒级查询。
+悦数图数据库（yueshu.com.cn）是一款分布式的、易扩展的原生图数据库，能够承载数千亿个点和数万亿条边的超大规模数据集，并且提供毫秒级查询。
 
-NebulaGraph Cloud 阿里云版是基于计算巢的数据服务产品，支持在阿里云平台上一键部署 NebulaGraph 企业版服务实例，帮助您完成数据库部署、性能调优、运维等繁杂工作，让您快速在云上创建整套图数据库服务集群。
+悦数图数据库（阿里云版）是基于计算巢的数据服务产品，支持在阿里云平台上一键部署悦数图数据库服务实例，帮助您完成数据库部署、性能调优、运维等繁杂工作，让您快速在云上创建整套图数据库服务集群。
 
 ## 资源与费用
 
-NebulaGraph Cloud 阿里云版支持免费试用和付费使用，二者的详细说明如下表。
+悦数图数据库（阿里云版）支持免费试用和付费使用，二者的详细说明如下表。
 
 | 项目 | 免费试用版 | 付费版 |
 | - | - | - |
 | 云资源归属 | 阿里云官方账号 | 用户账号 |
 | 云资源费用 | 阿里云承担 | 用户承担 |
 | 云资源使用时长 | 试用 30 天 | 用户创建实例时选择 |
-| NebulaGraph 许可证费用 | 试用期内免费 | 用户承担 |
-| NebulaGraph 服务许可证有效期 | 14 天 | 用户创建实例时选择 |
+| 悦数图数据库许可证费用 | 试用期内免费 | 用户承担 |
+| 悦数图数据库服务许可证有效期 | 14 天 | 用户创建实例时选择 |
 | 许可证过期后数据是否保留 | 是 | 是 |
 | 云资源到期后数据是否保留 | 否 | 否 |
 
-NebulaGraph Cloud 阿里云版在计算巢中的云资源费用主要涉及：
+悦数图数据库（阿里云版）在计算巢中的云资源费用主要涉及：
 
 - 所选 vCPU 与内存规格
 - 数据盘类型（固定为 PL0 级 ESSD 云盘）及容量
@@ -35,17 +35,17 @@ NebulaGraph Cloud 阿里云版在计算巢中的云资源费用主要涉及：
 
 ## 套餐版本与部署架构
 
-NebulaGraph Cloud 阿里云版支持如下套餐版本和部署架构。
+悦数图数据库（阿里云版）支持如下套餐版本和部署架构。
 
 | 套餐版本 | 部署架构 |
 | - | - |
-| 基础版 | 将所有 NebulaGraph 服务节点部署在 1 台 ECS 服务器上。 |
+| 基础版 | 将所有悦数图数据库服务节点部署在 1 台 ECS 服务器上。 |
 | 标准版 | 将 Graph 服务和 Storage 服务分别部署在不同的 ECS 服务器上，每个服务都是单节点（1 台 ECS）。将 Explorer 等生态工具混合部署在 1 台 ECS 服务器上。 |
 | 高可用版 |  将 Graph 服务和 Storage 服务分别部署在不同的 ECS 服务器上，每个服务都包含 3 节点（3 台 ECS）。将 Explorer 等生态工具混合部署在 1 台 ECS 服务器上。 |
 
 ## RAM账号所需权限
 
-NebulaGraph 服务需要对 ECS、VPC 等资源进行访问和创建操作，若您使用 RAM 用户创建服务实例，需要在创建服务实例前，对使用的RAM用户的账号添加相应资源的权限。添加RAM权限的详细操作，请参见[为 RAM 用户授权](https://help.aliyun.com/document_detail/121945.html)。所需权限如下表所示。
+悦数图数据库服务需要对 ECS、VPC 等资源进行访问和创建操作，若您使用 RAM 用户创建服务实例，需要在创建服务实例前，对使用的RAM用户的账号添加相应资源的权限。添加RAM权限的详细操作，请参见[为 RAM 用户授权](https://help.aliyun.com/document_detail/121945.html)。所需权限如下表所示。
 
 | 权限策略名称 | 备注 |
 | --- | --- |
@@ -59,15 +59,15 @@ NebulaGraph 服务需要对 ECS、VPC 等资源进行访问和创建操作，若
 
 1. 登录[阿里云控制台](https://home.console.aliyun.com/home/dashboard/ProductAndService)。
 
-2. 打开云市场的 [NebulaGraph 产品页](https://market.aliyun.com/products/56024006/cmgj00059955.html?#sku=yuncode5395500004)。
+2. 打开云市场的 [悦数图数据库产品页](https://market.aliyun.com/products/56024006/cmgj00059955.html?#sku=yuncode5395500004)。
 
-3. 选择**套餐版本**和**购买时长**（即 NebulaGraph 服务的许可证有效期），并单击**立即购买**。
+3. 选择**套餐版本**和**购买时长**（即 悦数图数据库服务的许可证有效期），并单击**立即购买**。
 
   >**注意：** 当前云市场显示的部分价格并非实际售价，购买时需通过右侧的钉钉客服确认实际价格。
 
 4. 在**创建服务实例**页，保持**选择模板**处的选择不变。如需切换部署架构，可改变选中的选项，重新选择模板。
 
-  >**说明：** 改变模板会改变之前选择的套餐版本，软件费用（NebulaGraph 许可证费用）和创建服务实例需要的资源也会改变。
+  >**说明：** 改变模板会改变之前选择的套餐版本，软件费用（悦数图数据库许可证费用）和创建服务实例需要的资源也会改变。
 
 5. （可选）设置**服务实例名称**。默认值为服务实例 ID。
 
@@ -79,7 +79,7 @@ NebulaGraph 服务需要对 ECS、VPC 等资源进行访问和创建操作，若
 
   - **包年包月**：先付费后使用。详情参见[包年包月](https://help.aliyun.com/document_detail/56220.html)。选择包年包月模式需要指定**购买时长周期**和**购买时长**。**购买时长周期**当前仅支持 **Month**，即按月购买。
 
-8. 在 **NebulaGraph 配置**区域，完成数据盘和 ECS 服务器密码设置。
+8. 在 **悦数图数据库配置**区域，完成数据盘和 ECS 服务器密码设置。
   
 9. 在**基础设施配置**区域，完成以下设置。
 
@@ -117,11 +117,11 @@ NebulaGraph 服务需要对 ECS、VPC 等资源进行访问和创建操作，若
 
 >**禁止：** 免费试用实例不可在生产环境中使用。
 
-1. 登录阿里云计算巢[推荐服务](http://c.nxw.so/bC0C0 "https://computenest.console.aliyun.com/user/cn-hangzhou/recommendService")页面，搜索 **NebulaGraph**。
+1. 登录阿里云计算巢[推荐服务](http://c.nxw.so/bC0C0 "https://computenest.console.aliyun.com/user/cn-hangzhou/recommendService")页面，搜索 **悦数图数据库**。
 
-2. 在 **NebulaGraph 集群版**卡片上，单击**免费试用**。
+2. 在 **悦数图数据库集群版**卡片上，单击**免费试用**。
 
-3. 系统会为首次创建 NebulaGraph 服务实例的用户弹出申请对话框。在**申请权限**对话框中填写申请人信息。带有红色星号（*）的为必填项。
+3. 系统会为首次创建悦数图数据库服务实例的用户弹出申请对话框。在**申请权限**对话框中填写申请人信息。带有红色星号（*）的为必填项。
 
   >**说明：** 申请通过后需从第 1 步重新开始。
 
@@ -129,7 +129,7 @@ NebulaGraph 服务需要对 ECS、VPC 等资源进行访问和创建操作，若
 
 5. 选择要创建实例的**地域**。
 
-6. 在 **NebulaGraph 配置**区域，完成数据盘和 ECS 服务器密码设置。
+6. 在 **悦数图数据库配置**区域，完成数据盘和 ECS 服务器密码设置。
   
 7. 在**基础设施配置**区域，选择**交换机可用区**。
 
@@ -163,12 +163,12 @@ NebulaGraph 服务需要对 ECS、VPC 等资源进行访问和创建操作，若
 
 3. 在**概览**标签页的**基本信息**区域，可以查看 Graph 服务、Storage 服务，以及 Explorer、Dashboard 等周边工具的连接信息。
 
-## 连接 NebulaGraph
+## 连接悦数图数据库
 
-NebulaGraph Cloud 阿里云版提供多种连接方式，详情参见[连接 NebulaGraph](https://docs.nebula-graph.com.cn/3.1.3/nebula-cloud/nebula-cloud-on-alibabacloud/2.use-cloud-services/#nebulagraph)。
+悦数图数据库（阿里云版）提供多种连接方式，详情参见[连接悦数图数据库](https://docs.yueshu.com.cn/3.6.0/2.quick-start/2.quick-start-on-cloud/2.connect-to-nebulagraph-on-cloud/)。
 
 ## 联系我们
 
-如果对 NebulaGraph 产品有任何疑问，访问 [NebulaGraph 产品页](https://market.aliyun.com/products/56024006/cmgj00059955.html?#sku=yuncode5395500004)，通过页面右侧的方式联系我们：
+如果对悦数图数据库产品有任何疑问，访问 [悦数图数据库产品页](https://market.aliyun.com/products/56024006/cmgj00059955.html?#sku=yuncode5395500004)，通过页面右侧的方式联系我们：
 
-![联系 NebulaGraph 服务商](https://docs-cdn.nebula-graph.com.cn/figures/alicloud-contact-us_2023.01.04.png)
+![联系悦数图数据库服务商](https://docs-cdn.nebula-graph.com.cn/figures/alicloud-contact-us_2023.01.04.png)
