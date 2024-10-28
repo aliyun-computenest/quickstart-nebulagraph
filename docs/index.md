@@ -117,7 +117,7 @@ NebulaGraph 服务需要对 ECS、VPC 等资源进行访问和创建操作，若
 
 >**禁止：** 免费试用实例不可在生产环境中使用。
 
-1. 登录阿里云计算巢[推荐服务](http://c.nxw.so/bC0C0 "https://computenest.console.aliyun.com/user/cn-hangzhou/recommendService")页面，搜索 **NebulaGraph**。
+1. 登录阿里云计算巢[推荐服务](https://computenest.console.aliyun.com/user/cn-hangzhou/recommendService)页面，搜索 **NebulaGraph**。
 
 2. 在 **NebulaGraph 集群版**卡片上，单击**免费试用**。
 
